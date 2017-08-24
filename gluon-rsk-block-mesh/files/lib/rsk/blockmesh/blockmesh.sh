@@ -43,19 +43,31 @@ if [ $DISABLED -eq 0 ]; then
               # echo $LIST
                 for MAC in $LIST
                   do
-                        #iw dev mesh0 set $MAC plink_action block
+                        #iw dev mesh0 station set $MAC plink_action block
                         # fallback to iptables - iw does not work - to be checked later
                         # convert $MAC to upper strings to match iptables output
-                        CHECK=$(echo $MAC|tr "[a-z]" "[A-Z")
-                        MACCHECK=`iptables -L INPUT | grep $CHECK | wc -l`
-                        if [ $MACCHECK -eq '0' ]; then
-                             echo "blocking $MAC"
-                             # ipv4
-                             iptables  -I INPUT 1 -m mac --mac-source $MAC -j DROP
-                             # ipv6
-                             ip6tables -I INPUT 1 -m mac --mac-source $MAC -j DROP
-                           else
-                             echo "already blocked $MAC"
+                        # CHECK=$(echo $MAC|tr "[a-z]" "[A-Z") # only iptables needs upper-case MAC
+                        #
+                        
+                        #
+                        # check, ob mesh link zum sperren vorhanden
+                        # iw dev mesh0 station get  | grep Station | wc -l ->1
+                        MAC_LINK=`iw dev mesh0 station get $MAC | grep Station | wc -l`
+                        if [ $MAC_LINK -eq 1 ]; then
+                            #
+                            # check, ob station bereits gesperrt ist
+                            # iw dev mesh0 station get $MAC | grep BLOCKED | wc -l ->1
+                            MAC_BLOCKED=`iw dev mesh0 station get $MAC | grep BLOCKED | wc -l`
+                            if [ $MAC_BLOCKED -eq 0 ]; then
+                                # wenn noch nicht gesperrt, dann
+                                #
+                                echo "blocking $MAC"
+                                iw dev mesh0 station set $MAC plink_action block
+                            else
+                                echo "$MAC is already blocked."
+                            fi
+                        else
+                            echo "$MAC has no active link."
                         fi
                  done
 
