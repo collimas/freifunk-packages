@@ -4,10 +4,10 @@
 # nice try, but most often, time is not in sync - check manually ! 
 
 
-HOUR=`uci get rsk.@robinson[0].hour`
+
 DISABLED=`uci get rsk.@robinson[0].disabled`
 
-HOUR=`date +"%H"`
+
 # check if enabled
 if [ $DISABLED -eq 0 ]; then
 
