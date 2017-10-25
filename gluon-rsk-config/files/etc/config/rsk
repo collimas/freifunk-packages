@@ -31,3 +31,6 @@ config blockmesh
         option disabled '1'
         option maclist '0a:0a:0a:0a:0a:0a 0b:0b:0b:0b:0b:0b 0c:0c:0c:0c:0c:0c'
         
+config robinson
+        option hour '4'
+        option disabled '1'
