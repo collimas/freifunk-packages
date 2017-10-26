@@ -9,7 +9,7 @@ DISABLED=`uci get rsk.@robinson[0].disabled`
 
 
 # check if enabled
-if [ $DISABLED -eq 0 ]; then
+if [ $DISABLED eq 0 ]; then
 
   # check for connected clients
    CLIENTS=`batctl tl |grep W |wc -l`
